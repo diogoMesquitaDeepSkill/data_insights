@@ -4,57 +4,83 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DashboardLayout } from "@/components/ui/dashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Loader from "@/components/ui/loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useRouter } from "next/navigation"; // Changed from next/router
+import React, { useState } from "react";
 
 export default function DataImport() {
-  const [importSource, setImportSource] = useState("hubspot");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      router.push("/dashboard");
+    }, 5000);
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
-    <DashboardLayout>
-      <Card className="w-[400px]">
+    <div className="container mx-auto p-4">
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Import Data</CardTitle>
-          <CardDescription>
-            Connect your data sources to get started
-          </CardDescription>
+          <CardTitle>Import Your Data</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={importSource} onValueChange={setImportSource}>
+          <Tabs defaultValue="excel">
             <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="excel">Excel</TabsTrigger>
               <TabsTrigger value="hubspot">HubSpot</TabsTrigger>
               <TabsTrigger value="salesforce">Salesforce</TabsTrigger>
-              <TabsTrigger value="bank">Bank</TabsTrigger>
             </TabsList>
+            <TabsContent value="excel">
+              <form onSubmit={handleSubmit}>
+                <Label htmlFor="file-upload">Upload Excel File</Label>
+                <Input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept=".xlsx,.xls,.csv"
+                />
+              </form>
+            </TabsContent>
             <TabsContent value="hubspot">
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
+              <div className="space-y-4">
+                <div>
                   <Label htmlFor="hubspot-api-key">HubSpot API Key</Label>
                   <Input
                     id="hubspot-api-key"
+                    type="password"
                     placeholder="Enter your HubSpot API key"
                   />
                 </div>
+                <Button onClick={handleSubmit}>Connect HubSpot</Button>
               </div>
             </TabsContent>
             <TabsContent value="salesforce">
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
+              <div className="space-y-4">
+                <div>
                   <Label htmlFor="salesforce-username">
                     Salesforce Username
                   </Label>
@@ -63,7 +89,7 @@ export default function DataImport() {
                     placeholder="Enter your Salesforce username"
                   />
                 </div>
-                <div className="flex flex-col space-y-1.5">
+                <div>
                   <Label htmlFor="salesforce-password">
                     Salesforce Password
                   </Label>
@@ -73,47 +99,17 @@ export default function DataImport() {
                     placeholder="Enter your Salesforce password"
                   />
                 </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="bank">
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="bank-name">Bank Name</Label>
-                  <Select>
-                    <SelectTrigger id="bank-name">
-                      <SelectValue placeholder="Select your bank" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="chase">Chase</SelectItem>
-                      <SelectItem value="bofa">Bank of America</SelectItem>
-                      <SelectItem value="wells-fargo">Wells Fargo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="bank-username">Username</Label>
-                  <Input
-                    id="bank-username"
-                    placeholder="Enter your bank username"
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="bank-password">Password</Label>
-                  <Input
-                    id="bank-password"
-                    type="password"
-                    placeholder="Enter your bank password"
-                  />
-                </div>
+                <Button onClick={handleSubmit}>Connect Salesforce</Button>
               </div>
             </TabsContent>
           </Tabs>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
-          <Button>Connect</Button>
+        <CardFooter>
+          <Button type="submit" onClick={handleSubmit}>
+            Next: Analyze Data
+          </Button>
         </CardFooter>
       </Card>
-    </DashboardLayout>
+    </div>
   );
 }

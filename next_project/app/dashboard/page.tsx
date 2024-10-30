@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,31 +7,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { DashboardLayout } from "@/components/ui/dashboardLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ArrowUpRight,
-  BarChart2,
-  PieChart as PieChartIcon,
-  TrendingUp,
-  Workflow,
-} from "lucide-react";
+import { DollarSign, ShoppingCart, Target, Users } from "lucide-react";
 import { useState } from "react";
-import { Bar, BarChart, Line, LineChart, Pie, PieChart } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-// Mock data
+// Enhanced mock data
 const revenueData = [
-  { month: "Jan", revenue: 10000 },
-  { month: "Feb", revenue: 12000 },
-  { month: "Mar", revenue: 15000 },
-  { month: "Apr", revenue: 13000 },
-  { month: "May", revenue: 18000 },
-  { month: "Jun", revenue: 20000 },
+  { month: "Jan", revenue: 10000, expenses: 8000, profit: 2000 },
+  { month: "Feb", revenue: 12000, expenses: 9000, profit: 3000 },
+  { month: "Mar", revenue: 15000, expenses: 10000, profit: 5000 },
+  { month: "Apr", revenue: 13000, expenses: 11000, profit: 2000 },
+  { month: "May", revenue: 18000, expenses: 12000, profit: 6000 },
+  { month: "Jun", revenue: 20000, expenses: 13000, profit: 7000 },
 ];
 
 const costBreakdown = [
@@ -43,12 +47,27 @@ const costBreakdown = [
 ];
 
 const customerAcquisition = [
-  { month: "Jan", newCustomers: 20, churn: 5 },
-  { month: "Feb", newCustomers: 25, churn: 7 },
-  { month: "Mar", newCustomers: 30, churn: 6 },
-  { month: "Apr", newCustomers: 35, churn: 8 },
-  { month: "May", newCustomers: 40, churn: 10 },
-  { month: "Jun", newCustomers: 45, churn: 12 },
+  { month: "Jan", newCustomers: 20, churn: 5, retentionRate: 75 },
+  { month: "Feb", newCustomers: 25, churn: 7, retentionRate: 72 },
+  { month: "Mar", newCustomers: 30, churn: 6, retentionRate: 80 },
+  { month: "Apr", newCustomers: 35, churn: 8, retentionRate: 77 },
+  { month: "May", newCustomers: 40, churn: 10, retentionRate: 75 },
+  { month: "Jun", newCustomers: 45, churn: 12, retentionRate: 73 },
+];
+
+const productPerformance = [
+  { name: "Product A", sales: 4000, satisfaction: 85 },
+  { name: "Product B", sales: 3000, satisfaction: 78 },
+  { name: "Product C", sales: 2000, satisfaction: 90 },
+  { name: "Product D", sales: 2780, satisfaction: 82 },
+  { name: "Product E", sales: 1890, satisfaction: 88 },
+];
+
+const customerLifetimeValue = [
+  { segment: "New", clv: 500 },
+  { segment: "Regular", clv: 2000 },
+  { segment: "Loyal", clv: 5000 },
+  { segment: "VIP", clv: 10000 },
 ];
 
 export default function Dashboard() {
@@ -69,7 +88,7 @@ export default function Dashboard() {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="financial">Financial</TabsTrigger>
             <TabsTrigger value="customers">Customers</TabsTrigger>
-            <TabsTrigger value="workflow">Workflow</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -78,7 +97,7 @@ export default function Dashboard() {
                   <CardTitle className="text-sm font-medium">
                     Total Revenue
                   </CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">$88,000</div>
@@ -90,42 +109,42 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    New Customers
+                    Customer Lifetime Value
                   </CardTitle>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+                  <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">195</div>
+                  <div className="text-2xl font-bold">$4,350</div>
                   <p className="text-xs text-muted-foreground">
-                    +180.1% from last month
+                    +15.3% from last quarter
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Profit Margin
+                    Conversion Rate
                   </CardTitle>
-                  <BarChart2 className="h-4 w-4 text-muted-foreground" />
+                  <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">24.5%</div>
+                  <div className="text-2xl font-bold">3.2%</div>
                   <p className="text-xs text-muted-foreground">
-                    +2.5% from last month
+                    +0.5% from last month
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Customer Churn
+                    Customer Satisfaction
                   </CardTitle>
-                  <PieChartIcon className="h-4 w-4 text-muted-foreground" />
+                  <Target className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">5.2%</div>
+                  <div className="text-2xl font-bold">4.7/5</div>
                   <p className="text-xs text-muted-foreground">
-                    -1.1% from last month
+                    +0.2 from last month
                   </p>
                 </CardContent>
               </Card>
@@ -133,7 +152,7 @@ export default function Dashboard() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>
-                  <CardTitle>Revenue Overview</CardTitle>
+                  <CardTitle>Revenue, Expenses, and Profit</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ChartContainer
@@ -142,43 +161,62 @@ export default function Dashboard() {
                         label: "Revenue",
                         color: "hsl(var(--chart-1))",
                       },
+                      expenses: {
+                        label: "Expenses",
+                        color: "hsl(var(--chart-2))",
+                      },
+                      profit: { label: "Profit", color: "hsl(var(--chart-3))" },
                     }}
-                    className="h-[200px]"
+                    className="h-[300px]"
                   >
-                    <BarChart data={revenueData}>
-                      <Bar dataKey="revenue" fill="var(--color-revenue)" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                    </BarChart>
+                    <AreaChart data={revenueData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip content={<ChartTooltipContent />} />
+                      <Area
+                        type="monotone"
+                        dataKey="revenue"
+                        stackId="1"
+                        stroke="var(--color-revenue)"
+                        fill="var(--color-revenue)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="expenses"
+                        stackId="1"
+                        stroke="var(--color-expenses)"
+                        fill="var(--color-expenses)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="profit"
+                        stackId="1"
+                        stroke="var(--color-profit)"
+                        fill="var(--color-profit)"
+                      />
+                    </AreaChart>
                   </ChartContainer>
                 </CardContent>
               </Card>
               <Card className="col-span-3">
                 <CardHeader>
-                  <CardTitle>Cost Breakdown</CardTitle>
+                  <CardTitle>Customer Lifetime Value by Segment</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ChartContainer
                     config={{
-                      Labor: { label: "Labor", color: "hsl(var(--chart-1))" },
-                      Materials: {
-                        label: "Materials",
-                        color: "hsl(var(--chart-2))",
-                      },
-                      Overhead: {
-                        label: "Overhead",
-                        color: "hsl(var(--chart-3))",
-                      },
-                      Marketing: {
-                        label: "Marketing",
-                        color: "hsl(var(--chart-4))",
-                      },
+                      clv: { label: "CLV", color: "hsl(var(--chart-1))" },
                     }}
-                    className="h-[200px]"
+                    className="h-[300px]"
                   >
-                    <PieChart data={costBreakdown}>
-                      <Pie dataKey="value" nameKey="name" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                    </PieChart>
+                    <BarChart data={customerLifetimeValue}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="segment" />
+                      <YAxis />
+                      <Tooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="clv" fill="var(--color-clv)" />
+                    </BarChart>
                   </ChartContainer>
                 </CardContent>
               </Card>
@@ -193,16 +231,54 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Financial analysis content would go here...</p>
+                <ChartContainer
+                  config={{
+                    revenue: { label: "Revenue", color: "hsl(var(--chart-1))" },
+                    expenses: {
+                      label: "Expenses",
+                      color: "hsl(var(--chart-2))",
+                    },
+                    profit: { label: "Profit", color: "hsl(var(--chart-3))" },
+                  }}
+                  className="h-[400px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={revenueData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="var(--color-revenue)"
+                        activeDot={{ r: 8 }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="expenses"
+                        stroke="var(--color-expenses)"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="profit"
+                        stroke="var(--color-profit)"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
               </CardContent>
             </Card>
           </TabsContent>
           <TabsContent value="customers">
             <Card>
               <CardHeader>
-                <CardTitle>Customer Acquisition and Churn</CardTitle>
+                <CardTitle>
+                  Customer Acquisition, Churn, and Retention
+                </CardTitle>
                 <CardDescription>
-                  Track new customers and churn rate
+                  Track customer metrics over time
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -213,46 +289,91 @@ export default function Dashboard() {
                       color: "hsl(var(--chart-1))",
                     },
                     churn: { label: "Churn", color: "hsl(var(--chart-2))" },
+                    retentionRate: {
+                      label: "Retention Rate",
+                      color: "hsl(var(--chart-3))",
+                    },
                   }}
-                  className="h-[300px]"
+                  className="h-[400px]"
                 >
-                  <LineChart data={customerAcquisition}>
-                    <Line
-                      type="monotone"
-                      dataKey="newCustomers"
-                      stroke="var(--color-newCustomers)"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="churn"
-                      stroke="var(--color-churn)"
-                    />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                  </LineChart>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={customerAcquisition}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" />
+                      <Tooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="newCustomers"
+                        stroke="var(--color-newCustomers)"
+                      />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="churn"
+                        stroke="var(--color-churn)"
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="retentionRate"
+                        stroke="var(--color-retentionRate)"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
             </Card>
           </TabsContent>
-          <TabsContent value="workflow">
+          <TabsContent value="products">
             <Card>
               <CardHeader>
-                <CardTitle>Workflow Builder</CardTitle>
+                <CardTitle>Product Performance</CardTitle>
                 <CardDescription>
-                  Visualize and optimize your business processes
+                  Sales and customer satisfaction by product
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex items-center justify-center p-6">
-                <div className="text-center">
-                  <Workflow className="mx-auto h-16 w-16 text-muted-foreground" />
-                  <h3 className="mt-4 text-lg font-semibold">
-                    Create Your Workflow
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Start building your custom workflow to visualize your
-                    business processes.
-                  </p>
-                  <Button className="mt-4">Start Building</Button>
-                </div>
+              <CardContent>
+                <ChartContainer
+                  config={{
+                    sales: { label: "Sales", color: "hsl(var(--chart-1))" },
+                    satisfaction: {
+                      label: "Satisfaction",
+                      color: "hsl(var(--chart-2))",
+                    },
+                  }}
+                  className="h-[400px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart>
+                      <CartesianGrid />
+                      <XAxis
+                        type="number"
+                        dataKey="sales"
+                        name="Sales"
+                        unit="$"
+                      />
+                      <YAxis
+                        type="number"
+                        dataKey="satisfaction"
+                        name="Satisfaction"
+                        unit="%"
+                      />
+                      <Tooltip
+                        cursor={{ strokeDasharray: "3 3" }}
+                        content={<ChartTooltipContent />}
+                      />
+                      <Scatter
+                        name="Products"
+                        data={productPerformance}
+                        fill="var(--color-sales)"
+                      />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
               </CardContent>
             </Card>
           </TabsContent>
