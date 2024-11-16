@@ -8,7 +8,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
@@ -17,6 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const subMenuItemsOne = [
   {
@@ -66,6 +66,14 @@ const subMenuItemsTwo = [
 ];
 
 const Navbar1 = () => {
+  const router = useRouter();
+
+  const handleLogIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically save this data to your state management solution or API
+    // For now, we'll just move to the next step
+    router.push("/login");
+  };
   return (
     <section className="pt-4 pl-4 pr-4">
       <div className="container">
@@ -80,7 +88,7 @@ const Navbar1 = () => {
               <span className="text-xl font-bold">Data Insights</span>
             </div>
             <div className="flex items-center">
-              <a
+              {/* <a
                 className={cn(
                   "text-muted-foreground",
                   navigationMenuTriggerStyle,
@@ -157,7 +165,7 @@ const Navbar1 = () => {
                 </NavigationMenuList>
               </NavigationMenu> */}
 
-              <a
+              {/* <a
                 className={cn(
                   "text-muted-foreground",
                   navigationMenuTriggerStyle,
@@ -180,11 +188,13 @@ const Navbar1 = () => {
                 href="./data-import"
               >
                 Data import
-              </a>
+              </a> */}
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant={"outline"}>Log in</Button>
+            <Button variant={"outline"} onClick={handleLogIn}>
+              Log in
+            </Button>
             <Button>Sign up</Button>
           </div>
         </nav>
