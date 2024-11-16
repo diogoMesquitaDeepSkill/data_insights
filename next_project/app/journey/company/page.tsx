@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CenteredLayout } from "@/components/ui/centeredLayout";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation"; // Changed from next/router
@@ -22,11 +23,11 @@ export default function Company() {
     e.preventDefault();
     // Here you would typically save this data to your state management solution or API
     // For now, we'll just move to the next step
-    router.push("/data-import");
+    router.push("/journey/goals");
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <CenteredLayout>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Tell Us About Your Company</CardTitle>
@@ -88,6 +89,6 @@ export default function Company() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </CenteredLayout>
   );
 }

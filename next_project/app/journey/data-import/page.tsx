@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CenteredLayout } from "@/components/ui/centeredLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Loader from "@/components/ui/loader";
@@ -42,7 +43,7 @@ export default function DataImport() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <CenteredLayout>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Import Your Data</CardTitle>
@@ -110,6 +111,6 @@ export default function DataImport() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </CenteredLayout>
   );
 }
